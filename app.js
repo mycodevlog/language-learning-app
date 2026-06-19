@@ -3,6 +3,24 @@ let selectedVoice = null;
 let sentences = [];
 
 // =========================
+// LOAD VOICES (FRENCH)
+// =========================
+function loadVoices() {
+  voices = speechSynthesis.getVoices();
+
+  selectedVoice =
+    voices.find(v => v.lang === "fr-FR") ||
+    voices.find(v => v.lang.startsWith("fr")) ||
+    null;
+
+  console.log("Selected voice:", selectedVoice);
+  console.log("Available voices:", voices.map(v => `${v.name} (${v.lang})`));
+}
+
+speechSynthesis.onvoiceschanged = loadVoices;
+loadVoices();
+
+// =========================
 // LOAD SENTENCES
 // =========================
 function loadSentences() {
@@ -54,6 +72,14 @@ function speak(text, repeatOverride = null) {
     const utter = new SpeechSynthesisUtterance(text);
     utter.rate = speed;
 
+    // 🇫🇷 APPLY FRENCH VOICE
+    if (selectedVoice) {
+      utter.voice = selectedVoice;
+      utter.lang = selectedVoice.lang;
+    } else {
+      utter.lang = "fr-FR";
+    }
+
     utter.onend = () => {
       count++;
       play();
@@ -96,6 +122,14 @@ function playAll() {
       const utter = new SpeechSynthesisUtterance(sentences[i]);
       utter.rate = speed;
 
+      // 🇫🇷 APPLY FRENCH VOICE
+      if (selectedVoice) {
+        utter.voice = selectedVoice;
+        utter.lang = selectedVoice.lang;
+      } else {
+        utter.lang = "fr-FR";
+      }
+
       utter.onend = () => {
         count++;
         setTimeout(repeatSpeak, 150);
@@ -114,22 +148,15 @@ function playAll() {
 // TEST VOICE
 // =========================
 function testSpeech() {
-  const utter = new SpeechSynthesisUtterance("Hello, this is a test");
+  const utter = new SpeechSynthesisUtterance("Bonjour, ceci est un test");
   utter.rate = 1;
+
+  if (selectedVoice) {
+    utter.voice = selectedVoice;
+    utter.lang = selectedVoice.lang;
+  } else {
+    utter.lang = "fr-FR";
+  }
+
   speechSynthesis.speak(utter);
 }
-
-function loadVoices() {
-  voices = speechSynthesis.getVoices();
-
-  // pick best French voice automatically
-  selectedVoice =
-    voices.find(v => v.lang === "fr-FR") ||
-    voices.find(v => v.lang.startsWith("fr")) ||
-    null;
-
-  console.log("Selected voice:", selectedVoice);
-}
-
-speechSynthesis.onvoiceschanged = loadVoices;
-loadVoices();
