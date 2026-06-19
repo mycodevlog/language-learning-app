@@ -1,45 +1,84 @@
-let data = {
-  sentences: []
-};
+const STORAGE_KEY = "language_app_sentences";
 
-function render() {
-  const list = document.getElementById("sentenceList");
+let sentences = [];
 
-  list.innerHTML = "";
-
-  data.sentences.forEach(item => {
-    list.innerHTML += `
-      <div class="sentence-card">
-        <strong>${item.topic}</strong>
-        <p>${item.sentence}</p>
-        <p class="translation">${item.translation}</p>
-      </div>
-    `;
-  });
+// =====================
+// LOAD FROM STORAGE
+// =====================
+function loadFromStorage() {
+  const data = localStorage.getItem(STORAGE_KEY);
+  sentences = data ? JSON.parse(data) : [];
 }
 
-function addSentence() {
+// =====================
+// SAVE TO STORAGE
+// =====================
+function saveToStorage() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(sentences));
+}
 
-  const topic =
-    document.getElementById("topicSelect").value;
+// =====================
+// ADD SENTENCE
+// =====================
+function handleAdd() {
+  const topic = document.getElementById("topic").value;
+  const sentence = document.getElementById("sentence").value.trim();
+  const translation = document.getElementById("translation").value.trim();
 
-  const sentence =
-    document.getElementById("sentence").value;
+  if (!sentence || !translation) return;
 
-  const translation =
-    document.getElementById("translation").value;
-
-  if (!sentence.trim()) return;
-
-  data.sentences.push({
-    id: Date.now(),
+  const newItem = {
+    id: Date.now().toString(),
     topic,
     sentence,
     translation
-  });
+  };
+
+  sentences.push(newItem);
+  saveToStorage();
+  renderSentences();
 
   document.getElementById("sentence").value = "";
   document.getElementById("translation").value = "";
-
-  render();
 }
+
+// =====================
+// DELETE SENTENCE
+// =====================
+function deleteSentence(id) {
+  sentences = sentences.filter(item => item.id !== id);
+  saveToStorage();
+  renderSentences();
+}
+
+// =====================
+// RENDER UI
+// =====================
+function renderSentences() {
+  const container = document.getElementById("sentenceList");
+  container.innerHTML = "";
+
+  sentences.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "card";
+
+    div.innerHTML = `
+      <h3>${item.topic}</h3>
+      <p><strong>${item.sentence}</strong></p>
+      <p>${item.translation}</p>
+      <button onclick="deleteSentence('${item.id}')">Delete</button>
+    `;
+
+    container.appendChild(div);
+  });
+}
+
+// =====================
+// INIT APP
+// =====================
+function init() {
+  loadFromStorage();
+  renderSentences();
+}
+
+init();
