@@ -1,3 +1,5 @@
+let voices = [];
+let selectedVoice = null;
 let sentences = [];
 
 // =========================
