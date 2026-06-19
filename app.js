@@ -1,7 +1,7 @@
 let sentences = [];
 
 // =========================
-// LOAD SENTENCES FROM TEXTAREA
+// LOAD SENTENCES
 // =========================
 function loadSentences() {
   const text = document.getElementById("inputText").value.trim();
@@ -20,13 +20,13 @@ function loadSentences() {
 }
 
 // =========================
-// RENDER SENTENCES ON SCREEN
+// RENDER LIST
 // =========================
 function render() {
   const list = document.getElementById("list");
   list.innerHTML = "";
 
-  sentences.forEach((sentence) => {
+  sentences.forEach(sentence => {
     const div = document.createElement("div");
     div.className = "card";
     div.innerText = sentence;
@@ -38,7 +38,7 @@ function render() {
 }
 
 // =========================
-// SPEAK ONE SENTENCE
+// SPEAK SINGLE SENTENCE
 // =========================
 function speak(text, repeatOverride = null) {
   const speed = parseFloat(document.getElementById("speed").value);
@@ -64,22 +64,22 @@ function speak(text, repeatOverride = null) {
 }
 
 // =========================
-// PLAY ALL SENTENCES
+// PLAY ALL (FIXED)
 // =========================
 function playAll() {
-  if (sentences.length === 0) {
+  if (!sentences.length) {
     alert("Load sentences first");
     return;
   }
 
-  speechSynthesis.cancel(); // IMPORTANT: clears stuck queue
+  speechSynthesis.cancel();
 
   const speed = parseFloat(document.getElementById("speed").value);
   const repeat = parseInt(document.getElementById("repeat").value);
 
   let i = 0;
 
-  function speakSentence() {
+  function speakNext() {
     if (i >= sentences.length) return;
 
     let count = 0;
@@ -87,7 +87,7 @@ function playAll() {
     function repeatSpeak() {
       if (count >= repeat) {
         i++;
-        setTimeout(speakSentence, 300); // small delay = stability
+        setTimeout(speakNext, 300);
         return;
       }
 
@@ -96,7 +96,7 @@ function playAll() {
 
       utter.onend = () => {
         count++;
-        setTimeout(repeatSpeak, 150); // prevents queue skipping
+        setTimeout(repeatSpeak, 150);
       };
 
       speechSynthesis.speak(utter);
@@ -105,16 +105,14 @@ function playAll() {
     repeatSpeak();
   }
 
-  speakSentence();
+  speakNext();
 }
 
-    repeatSpeak();
-  }
-
-  nextSentence();
-}
-
+// =========================
+// TEST SPEECH
+// =========================
 function testSpeech() {
+  speechSynthesis.cancel();
   const utter = new SpeechSynthesisUtterance("Hello, this is a test");
   utter.rate = 1;
   speechSynthesis.speak(utter);
