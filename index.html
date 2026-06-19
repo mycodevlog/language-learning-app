@@ -1,30 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Language Learning</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Language Learning App</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>Language Learning App</h1>
+  <h1>Language Learning App</h1>
 
-<select id="topicSelect">
-  <option>Travel</option>
-  <option>Work</option>
-  <option>Shopping</option>
-  <option>Hospital</option>
-</select>
+  <div>
+    <label for="topicSelect">Topic:</label>
+    <select id="topicSelect">
+      <option>Travel</option>
+      <option>Work</option>
+      <option>Shopping</option>
+      <option>Hospital</option>
+    </select>
+  </div>
 
-<input id="sentence">
-<input id="translation">
+  <br>
 
-<button onclick="addSentence()">
-Add
-</button>
+  <div>
+    <input
+      type="text"
+      id="sentence"
+      placeholder="Enter sentence">
+  </div>
 
-<div id="sentenceList"></div>
+  <br>
 
-<script src="app.js"></script>
+  <div>
+    <input
+      type="text"
+      id="translation"
+      placeholder="Enter translation">
+  </div>
+
+  <br>
+
+  <button onclick="addSentence()">
+    Add Sentence
+  </button>
+
+  <hr>
+
+  <h2>Sentences</h2>
+
+  <div id="sentenceList"></div>
+
+  <script src="app.js"></script>
 
 </body>
 </html>
