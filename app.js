@@ -1,13 +1,13 @@
 let sentences = [];
 
-// =====================
-// LOAD SENTENCES
-// =====================
+// =========================
+// LOAD SENTENCES FROM TEXTAREA
+// =========================
 function loadSentences() {
   const text = document.getElementById("inputText").value.trim();
 
   if (!text) {
-    alert("Please enter sentences first");
+    alert("Please paste sentences first");
     return;
   }
 
@@ -19,30 +19,30 @@ function loadSentences() {
   render();
 }
 
-// =====================
-// RENDER LIST
-// =====================
+// =========================
+// RENDER SENTENCES ON SCREEN
+// =========================
 function render() {
   const list = document.getElementById("list");
   list.innerHTML = "";
 
-  sentences.forEach((s) => {
+  sentences.forEach((sentence) => {
     const div = document.createElement("div");
     div.className = "card";
-    div.innerText = s;
+    div.innerText = sentence;
 
-    div.onclick = () => speak(s);
+    div.onclick = () => speak(sentence);
 
     list.appendChild(div);
   });
 }
 
-// =====================
-// SPEAK FUNCTION
-// =====================
-function speak(text, repeatCount = null) {
+// =========================
+// SPEAK ONE SENTENCE
+// =========================
+function speak(text, repeatOverride = null) {
   const speed = parseFloat(document.getElementById("speed").value);
-  const repeat = repeatCount || parseInt(document.getElementById("repeat").value);
+  const repeat = repeatOverride || parseInt(document.getElementById("repeat").value);
 
   let count = 0;
 
@@ -63,9 +63,9 @@ function speak(text, repeatCount = null) {
   play();
 }
 
-// =====================
-// PLAY ALL
-// =====================
+// =========================
+// PLAY ALL SENTENCES
+// =========================
 function playAll() {
   if (sentences.length === 0) {
     alert("Load sentences first");
@@ -77,7 +77,7 @@ function playAll() {
 
   let i = 0;
 
-  function next() {
+  function nextSentence() {
     if (i >= sentences.length) return;
 
     let count = 0;
@@ -85,7 +85,7 @@ function playAll() {
     function repeatSpeak() {
       if (count >= repeat) {
         i++;
-        next();
+        nextSentence();
         return;
       }
 
@@ -103,5 +103,5 @@ function playAll() {
     repeatSpeak();
   }
 
-  next();
+  nextSentence();
 }
