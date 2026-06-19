@@ -118,3 +118,15 @@ function testSpeech() {
   utter.rate = 1;
   speechSynthesis.speak(utter);
 }
+
+function loadVoices() {
+  voices = speechSynthesis.getVoices();
+
+  // pick best French voice automatically
+  selectedVoice =
+    voices.find(v => v.lang === "fr-FR") ||
+    voices.find(v => v.lang.startsWith("fr")) ||
+    null;
+
+  console.log("Selected voice:", selectedVoice);
+}
