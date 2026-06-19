@@ -26,7 +26,7 @@ function render() {
   const list = document.getElementById("list");
   list.innerHTML = "";
 
-  sentences.forEach(sentence => {
+  sentences.forEach((sentence) => {
     const div = document.createElement("div");
     div.className = "card";
     div.innerText = sentence;
@@ -38,7 +38,7 @@ function render() {
 }
 
 // =========================
-// SPEAK SINGLE SENTENCE
+// SPEAK ONE SENTENCE
 // =========================
 function speak(text, repeatOverride = null) {
   const speed = parseFloat(document.getElementById("speed").value);
@@ -64,10 +64,10 @@ function speak(text, repeatOverride = null) {
 }
 
 // =========================
-// PLAY ALL (FIXED)
+// PLAY ALL SENTENCES
 // =========================
 function playAll() {
-  if (!sentences.length) {
+  if (sentences.length === 0) {
     alert("Load sentences first");
     return;
   }
@@ -79,7 +79,7 @@ function playAll() {
 
   let i = 0;
 
-  function speakNext() {
+  function speakSentence() {
     if (i >= sentences.length) return;
 
     let count = 0;
@@ -87,7 +87,7 @@ function playAll() {
     function repeatSpeak() {
       if (count >= repeat) {
         i++;
-        setTimeout(speakNext, 300);
+        setTimeout(speakSentence, 300);
         return;
       }
 
@@ -105,14 +105,13 @@ function playAll() {
     repeatSpeak();
   }
 
-  speakNext();
+  speakSentence();
 }
 
 // =========================
-// TEST SPEECH
+// TEST VOICE
 // =========================
 function testSpeech() {
-  speechSynthesis.cancel();
   const utter = new SpeechSynthesisUtterance("Hello, this is a test");
   utter.rate = 1;
   speechSynthesis.speak(utter);
