@@ -113,3 +113,9 @@ function playAll() {
 
   nextSentence();
 }
+
+function testSpeech() {
+  const utter = new SpeechSynthesisUtterance("Hello, this is a test");
+  utter.rate = 1;
+  speechSynthesis.speak(utter);
+}
