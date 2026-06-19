@@ -130,3 +130,6 @@ function loadVoices() {
 
   console.log("Selected voice:", selectedVoice);
 }
+
+speechSynthesis.onvoiceschanged = loadVoices;
+loadVoices();
