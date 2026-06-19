@@ -1,10 +1,15 @@
 let sentences = [];
 
 // =====================
-// LOAD TEXT AREA → LIST
+// LOAD SENTENCES
 // =====================
 function loadSentences() {
-  const text = document.getElementById("inputText").value;
+  const text = document.getElementById("inputText").value.trim();
+
+  if (!text) {
+    alert("Please enter sentences first");
+    return;
+  }
 
   sentences = text
     .split("\n")
@@ -21,7 +26,7 @@ function render() {
   const list = document.getElementById("list");
   list.innerHTML = "";
 
-  sentences.forEach((s, index) => {
+  sentences.forEach((s) => {
     const div = document.createElement("div");
     div.className = "card";
     div.innerText = s;
@@ -33,16 +38,16 @@ function render() {
 }
 
 // =====================
-// SPEECH FUNCTION
+// SPEAK FUNCTION
 // =====================
-function speak(text, repeat = null) {
+function speak(text, repeatCount = null) {
   const speed = parseFloat(document.getElementById("speed").value);
-  const repeatCount = repeat || parseInt(document.getElementById("repeat").value);
+  const repeat = repeatCount || parseInt(document.getElementById("repeat").value);
 
   let count = 0;
 
   function play() {
-    if (count >= repeatCount) return;
+    if (count >= repeat) return;
 
     const utter = new SpeechSynthesisUtterance(text);
     utter.rate = speed;
@@ -59,11 +64,16 @@ function speak(text, repeat = null) {
 }
 
 // =====================
-// PLAY ALL SENTENCES
+// PLAY ALL
 // =====================
 function playAll() {
+  if (sentences.length === 0) {
+    alert("Load sentences first");
+    return;
+  }
+
   const speed = parseFloat(document.getElementById("speed").value);
-  const repeatCount = parseInt(document.getElementById("repeat").value);
+  const repeat = parseInt(document.getElementById("repeat").value);
 
   let i = 0;
 
@@ -73,7 +83,7 @@ function playAll() {
     let count = 0;
 
     function repeatSpeak() {
-      if (count >= repeatCount) {
+      if (count >= repeat) {
         i++;
         next();
         return;
