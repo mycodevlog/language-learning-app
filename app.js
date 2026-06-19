@@ -1,84 +1,97 @@
-const STORAGE_KEY = "language_app_sentences";
-
 let sentences = [];
 
 // =====================
-// LOAD FROM STORAGE
+// LOAD TEXT AREA → LIST
 // =====================
-function loadFromStorage() {
-  const data = localStorage.getItem(STORAGE_KEY);
-  sentences = data ? JSON.parse(data) : [];
+function loadSentences() {
+  const text = document.getElementById("inputText").value;
+
+  sentences = text
+    .split("\n")
+    .map(s => s.trim())
+    .filter(s => s.length > 0);
+
+  render();
 }
 
 // =====================
-// SAVE TO STORAGE
+// RENDER LIST
 // =====================
-function saveToStorage() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(sentences));
-}
+function render() {
+  const list = document.getElementById("list");
+  list.innerHTML = "";
 
-// =====================
-// ADD SENTENCE
-// =====================
-function handleAdd() {
-  const topic = document.getElementById("topic").value;
-  const sentence = document.getElementById("sentence").value.trim();
-  const translation = document.getElementById("translation").value.trim();
-
-  if (!sentence || !translation) return;
-
-  const newItem = {
-    id: Date.now().toString(),
-    topic,
-    sentence,
-    translation
-  };
-
-  sentences.push(newItem);
-  saveToStorage();
-  renderSentences();
-
-  document.getElementById("sentence").value = "";
-  document.getElementById("translation").value = "";
-}
-
-// =====================
-// DELETE SENTENCE
-// =====================
-function deleteSentence(id) {
-  sentences = sentences.filter(item => item.id !== id);
-  saveToStorage();
-  renderSentences();
-}
-
-// =====================
-// RENDER UI
-// =====================
-function renderSentences() {
-  const container = document.getElementById("sentenceList");
-  container.innerHTML = "";
-
-  sentences.forEach(item => {
+  sentences.forEach((s, index) => {
     const div = document.createElement("div");
     div.className = "card";
+    div.innerText = s;
 
-    div.innerHTML = `
-      <h3>${item.topic}</h3>
-      <p><strong>${item.sentence}</strong></p>
-      <p>${item.translation}</p>
-      <button onclick="deleteSentence('${item.id}')">Delete</button>
-    `;
+    div.onclick = () => speak(s);
 
-    container.appendChild(div);
+    list.appendChild(div);
   });
 }
 
 // =====================
-// INIT APP
+// SPEECH FUNCTION
 // =====================
-function init() {
-  loadFromStorage();
-  renderSentences();
+function speak(text, repeat = null) {
+  const speed = parseFloat(document.getElementById("speed").value);
+  const repeatCount = repeat || parseInt(document.getElementById("repeat").value);
+
+  let count = 0;
+
+  function play() {
+    if (count >= repeatCount) return;
+
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.rate = speed;
+
+    utter.onend = () => {
+      count++;
+      play();
+    };
+
+    speechSynthesis.speak(utter);
+  }
+
+  play();
 }
 
-init();
+// =====================
+// PLAY ALL SENTENCES
+// =====================
+function playAll() {
+  const speed = parseFloat(document.getElementById("speed").value);
+  const repeatCount = parseInt(document.getElementById("repeat").value);
+
+  let i = 0;
+
+  function next() {
+    if (i >= sentences.length) return;
+
+    let count = 0;
+
+    function repeatSpeak() {
+      if (count >= repeatCount) {
+        i++;
+        next();
+        return;
+      }
+
+      const utter = new SpeechSynthesisUtterance(sentences[i]);
+      utter.rate = speed;
+
+      utter.onend = () => {
+        count++;
+        repeatSpeak();
+      };
+
+      speechSynthesis.speak(utter);
+    }
+
+    repeatSpeak();
+  }
+
+  next();
+}
