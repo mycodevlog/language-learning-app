@@ -1,56 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Language Learning App</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Language Practice App</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <h1>Language Learning App</h1>
+  <h1>Language Practice Tool</h1>
 
-  <div>
-    <label for="topicSelect">Topic:</label>
-    <select id="topicSelect">
-      <option>Travel</option>
-      <option>Work</option>
-      <option>Shopping</option>
-      <option>Hospital</option>
-    </select>
+  <div class="panel">
+
+    <textarea id="inputText" placeholder="Paste sentences here (one per line)"></textarea>
+
+    <div class="controls">
+
+      <label>Speed:</label>
+      <select id="speed">
+        <option value="0.7">Slow</option>
+        <option value="1" selected>Normal</option>
+        <option value="1.3">Fast</option>
+      </select>
+
+      <label>Repeat:</label>
+      <select id="repeat">
+        <option value="1">1x</option>
+        <option value="3">3x</option>
+        <option value="5">5x</option>
+        <option value="10">10x</option>
+      </select>
+
+      <button onclick="loadSentences()">Load</button>
+      <button onclick="playAll()">Play All</button>
+
+    </div>
+
   </div>
 
-  <br>
-
-  <div>
-    <input
-      type="text"
-      id="sentence"
-      placeholder="Enter sentence">
-  </div>
-
-  <br>
-
-  <div>
-    <input
-      type="text"
-      id="translation"
-      placeholder="Enter translation">
-  </div>
-
-  <br>
-
-  <button onclick="addSentence()">
-    Add Sentence
-  </button>
-
-  <hr>
-
-  <h2>Sentences</h2>
-
-  <div id="sentenceList"></div>
+  <div id="list"></div>
 
   <script src="app.js"></script>
-
 </body>
 </html>
