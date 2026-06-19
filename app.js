@@ -72,12 +72,14 @@ function playAll() {
     return;
   }
 
+  speechSynthesis.cancel(); // IMPORTANT: clears stuck queue
+
   const speed = parseFloat(document.getElementById("speed").value);
   const repeat = parseInt(document.getElementById("repeat").value);
 
   let i = 0;
 
-  function nextSentence() {
+  function speakSentence() {
     if (i >= sentences.length) return;
 
     let count = 0;
@@ -85,7 +87,7 @@ function playAll() {
     function repeatSpeak() {
       if (count >= repeat) {
         i++;
-        nextSentence();
+        setTimeout(speakSentence, 300); // small delay = stability
         return;
       }
 
@@ -94,11 +96,17 @@ function playAll() {
 
       utter.onend = () => {
         count++;
-        repeatSpeak();
+        setTimeout(repeatSpeak, 150); // prevents queue skipping
       };
 
       speechSynthesis.speak(utter);
     }
+
+    repeatSpeak();
+  }
+
+  speakSentence();
+}
 
     repeatSpeak();
   }
